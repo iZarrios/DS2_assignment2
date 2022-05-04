@@ -6,17 +6,18 @@ import colored
 class Node():
     def __init__(self, data):
         self.data = data  # holds the key
-        self.parent = None  # pointer to the parent
-        self.left = None  # pointer to left child
-        self.right = None  # pointer to right child
-        self.color = 1  # 1 . Red, 0 . Black
+        self.parent = None
+        self.left = None
+        self.right = None
+        self.color = 1  # 0 Black, 1 Red
 
 
 # class RedBlackTree implements the operations in Red Black Tree
 class RedBlackTree():
     def __init__(self):
+        # rbt tree  begins with no nodes (TNULL  node)
         self.TNULL = Node(0)
-        self.TNULL.color = 0
+        self.TNULL.color = 0  # black color as from the rules of RBTree is for the node to be black
         self.TNULL.left = None
         self.TNULL.right = None
         self.root = self.TNULL
@@ -24,7 +25,6 @@ class RedBlackTree():
     def search(self, node, key):
         if node == self.TNULL or key == node.data:
             return node.data
-
         if key < node.data:
             return self.search(node.left, key)
         return self.search(node.right, key)
@@ -145,66 +145,69 @@ class RedBlackTree():
     def height(self, node):
         if node == self.TNULL:
             return 0
-        else:
-            lheight = self.height(node.left)
-            rheight = self.height(node.right)
-            if lheight > rheight:
-                return lheight + 1
-            else:
-                return rheight + 1
+        lheight = self.height(node.left)
+        rheight = self.height(node.right)
+        return max(lheight, rheight) + 1
 
     def size(self, node):
         if node == self.TNULL:
             return 0
-        else:
-            return self.size(node.left) + self.size(node.right) + 1
+        return self.size(node.left) + self.size(node.right) + 1
 
 
 if __name__ == "__main__":
+    W = '\033[0m'  # white (normal)
+    R = '\033[31m'  # red
+    G = '\033[32m'  # green
+    O = '\033[33m'  # orange
+    B = '\033[34m'  # blue
+    P = '\033[35m'  # purple
 
     rbt = RedBlackTree()
 
     try:
-        dictf = open('EN-US-Dictionary.txtr', 'r')
+        dictf = open('EN-US-Dictionary.txt', 'r')
+        print("Loaded Dictionary Successfully")
     except:
-        print("Couldn't open dictionary")
+        print(R+"\nCouldn't open dictionary\n"+W)
         exit(1)
 
-    dictionary = dictf.read().splitlines()
+    dictionary = dictf.read()
+    # print(dictionary)
+    # exit(0)
     for key in dictionary:
         rbt.insert(key)
     while True:
         print("1-Search\n2-Insert\n3-Tree Height\n4-Tree Size\n5-Exit")
-        choice = input(">")
-        if choice.lower() == 'search':
+        choice = input("> ")
+        if choice.lower() == 'search' or choice.lower() == "1":
             key = input("Search for Key: ")
+            if key == '':
+                continue
             if rbt.searchTree(key) == 0:
-                print("Not Found!")
+                print("NO")
             else:
-                print("Found!")
-        elif choice.lower() == 'insert':
-            print("Tree Height before Insertion: {}".format(
-                rbt.height(rbt.get_root())))
-            print("Tree Size before insertion: {}".format(
-                rbt.size(rbt.get_root())))
+                print("YES")
+        elif choice.lower() == 'insert' or choice.lower() == "2":
+            # print(f"Tree Height before Insertion: {rbt.height(rbt.get_root())}")
+            # print(f"Tree Size before insertion: {rbt.size(rbt.get_root())}")
             key = input("Insert Key: ")
             if rbt.searchTree(key) == 0:
                 rbt.insert(key)
 
-                print("{} Inserted!".format(key))
-                print("Tree Height after Insertion: {}".format(
-                    rbt.height(rbt.get_root())))
-                print("Tree Size after insertion: {}".format(
-                    rbt.size(rbt.get_root())))
+                print(f"{key} Inserted!")
+                # print("Tree Height after Insertion: {rbt.height(rbt.get_root())}")
+                # print(f"Tree Size after insertion: {rbt.size(rbt.get_root())}")
             else:
-                print("ERROR: Word already in the dictionary!")
-        elif choice.lower() == 'tree height':
-            print("Tree Height: {}".format(rbt.height(rbt.get_root())))
-        elif choice.lower() == 'tree size':
-            print("Tree Size: {}".format(rbt.size(rbt.get_root())))
+                print("Word already Exists!")
+        elif choice.lower() == 'tree height' or choice.lower() == "3":
+            print(f"Tree Height: {rbt.height(rbt.get_root())}")
+        elif choice.lower() == 'tree size' or choice.lower() == "4":
+            print(f"Tree Size: {rbt.size(rbt.get_root())}")
+            # ".format(rbt.size(rbt.get_root())))
 
-        elif choice.lower() == 'exit':
+        elif choice.lower() == 'exit' or choice.lower() == "5":
             print("------Terminating Program------")
-            break
+            exit(0)
         else:
             print("Not a Valid Choice!")
